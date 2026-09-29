@@ -20,7 +20,12 @@ todo_fac/
 │   ├── __init__.py
 │   └── posta.py            # Service d'envoi d'e-mails via l'API Posta
 ├── templates/
-│   ├── index.html          # Tableau de bord principal (création de projet, liste, invitations)
+│   ├── base.html           # Template de base (navbar, responsive, notifications)
+│   ├── index.html          # Tableau de bord général (KPIs, aperçus rapides)
+│   ├── creer_devoir.html   # Page dédiée : Création de devoir & invitations
+│   ├── mes_devoirs.html    # Page dédiée : Mes devoirs administrés & gestion des équipes
+│   ├── devoirs_partages.html # Page dédiée : Devoirs partagés avec moi & invitations en attente
+│   ├── collaborateurs.html # Page dédiée : Annuaire et gestion des collaborateurs
 │   ├── login.html          # Page de connexion
 │   └── register.html       # Page d'inscription
 ├── instance/
@@ -52,20 +57,23 @@ todo_fac/
 
 ---
 
-## ✨ Fonctionnalités Implémentées
+## ✨ Pages et Fonctionnalités
 
-1. **Inscription et Connexion sécurisées** :
-   - Hachage robuste des mots de passe.
-   - Gestion de session utilisateur via `Flask-Login`.
-   - Si un camarade a déjà été invité par son adresse e-mail avant d'avoir un compte, son inscription active automatiquement son compte et rattache ses invitations.
-2. **Création de Devoir / Projet** :
-   - L'utilisateur connecté devient automatiquement l'administrateur du projet.
-   - Saisie du titre, de la description et des e-mails des membres invités (séparés par des virgules).
-3. **Invitations par Email (Posta)** :
-   - Détection des utilisateurs existants ou pré-création de comptes temporaires.
-   - Création d'une invitation avec le statut `en_attente`.
-   - Appel au service d'email Posta.
-4. **Tableau de Bord Étudiant** :
-   - Bannière d'alerte pour les invitations reçues en attente avec boutons **Accepter** et **Refuser**.
-   - Liste des devoirs administrés avec visualisation en temps réel du statut de chaque membre (`Accepté ✅`, `En attente ⏳`).
-   - Liste des devoirs partagés rejoints.
+1. **Tableau de Bord Général (`/`)** :
+   - Vue d'ensemble avec métriques clés (Devoirs administrés, Devoirs partagés, Collaborateurs, Invitations).
+   - Accès rapide aux devoirs récents et alertes d'invitations.
+2. **Créer un Devoir (`/creer-devoir`)** :
+   - Formulaire dédié pour définir le titre, la description et inviter les camarades par e-mail.
+   - Envoi automatique des invitations par email via Posta.
+3. **Mes Devoirs (`/mes-devoirs`)** :
+   - Liste des devoirs dont vous êtes l'administrateur.
+   - Recherche en direct, ajout rapide de collaborateurs, relance d'invitations en attente et suppression.
+4. **Devoirs Partagés (`/devoirs-partages`)** :
+   - Suivi des devoirs créés par vos camarades.
+   - Gestion des invitations en attente (Accepter / Décliner) et option de quitter un devoir.
+5. **Liste des Collaborateurs (`/collaborateurs`)** :
+   - Annuaire complet de vos camarades de promotion avec qui vous travaillez.
+   - Recherche instantanée, statut de collaboration, contact par e-mail et invitation directe à un devoir.
+6. **Authentification & Sécurité (`/login`, `/register`, `/logout`)** :
+   - Hachage de mot de passe Werkzeug et gestion des sessions avec Flask-Login.
+   - Activation automatique des comptes invités lors de leur première inscription.
