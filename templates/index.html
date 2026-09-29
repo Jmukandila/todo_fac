@@ -1,467 +1,251 @@
-<!DOCTYPE html>
-<html lang="fr" class="h-full bg-slate-50/60">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord &bull; Todo Fac</title>
-    <!-- Google Font: Plus Jakarta Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="min-h-full flex flex-col font-sans antialiased text-slate-800 bg-slate-50/50">
+{% extends "base.html" %}
 
-    <!-- Navigation Header (Glassmorphic) -->
-    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/80">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- Brand -->
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center shadow-md shadow-indigo-500/20">
-                    <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+{% block title %}Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="space-y-6 sm:space-y-8">
+
+    <!-- Welcome Hero Banner -->
+    <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-violet-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 text-white shadow-lg shadow-indigo-950/10 relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5 sm:gap-6">
+            <div class="space-y-2 max-w-2xl min-w-0">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-white/10 text-indigo-200 border border-white/15">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-300"></i>
+                    Espace Étudiant
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xl font-extrabold tracking-tight text-slate-900">Todo<span class="text-indigo-600">Fac</span></span>
-                    <span class="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">
-                        <i data-lucide="sparkles" class="w-3 h-3 text-indigo-500"></i>
-                        Campus 2026
-                    </span>
-                </div>
+                <h1 class="text-xl xs:text-2xl sm:text-3xl font-extrabold tracking-tight text-white break-words">
+                    Bonjour, {{ current_user.nom }} ! 👋
+                </h1>
+                <p class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed">
+                    Suivez vos travaux universitaires, collaborez en temps réel et restez coordonnés avec votre groupe.
+                </p>
             </div>
 
-            <!-- User Menu -->
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
-                    <div class="relative">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                            {{ current_user.nom[0]|upper }}
-                        </div>
-                        <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
-                    </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-xs font-bold text-slate-900 leading-tight">{{ current_user.nom }}</p>
-                        <p class="text-[11px] text-slate-500 leading-tight">{{ current_user.email }}</p>
-                    </div>
-                </div>
-
-                <a href="{{ url_for('logout') }}" 
-                   title="Se déconnecter"
-                   class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 px-3 py-2 rounded-xl border border-slate-200 hover:border-rose-200 transition-all shadow-2xs">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Déconnexion</span>
+            <div class="flex flex-col xs:flex-row items-stretch xs:items-center gap-2.5 sm:gap-3 shrink-0">
+                <a href="{{ url_for('creer_devoir') }}" 
+                   class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl text-xs font-bold text-indigo-900 bg-white hover:bg-indigo-50 shadow-md transition-all active:scale-95 text-center">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Créer un devoir</span>
+                </a>
+                <a href="{{ url_for('mes_devoirs') }}" 
+                   class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 transition-all text-center">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    <span>Mes devoirs</span>
                 </a>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+        <!-- Decorative background elements -->
+        <div class="absolute -top-12 -right-12 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -left-12 w-64 h-64 bg-violet-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    </div>
 
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="space-y-2.5">
-                    {% for category, message in messages %}
-                        <div class="flex items-center justify-between p-4 rounded-2xl border text-sm font-medium shadow-xs transition-all duration-200
-                            {% if category == 'success' %}bg-emerald-50/80 border-emerald-200 text-emerald-800
-                            {% elif category == 'error' %}bg-rose-50/80 border-rose-200 text-rose-800
-                            {% elif category == 'warning' %}bg-amber-50/80 border-amber-200 text-amber-800
-                            {% else %}bg-indigo-50/80 border-indigo-200 text-indigo-800{% endif %}">
-                            <div class="flex items-center gap-2.5">
-                                <i data-lucide="{% if category == 'success' %}check-circle-2{% elif category == 'error' %}alert-circle{% elif category == 'warning' %}alert-triangle{% else %}info{% endif %}" class="w-4 h-4 shrink-0"></i>
-                                <span>{{ message }}</span>
-                            </div>
-                            <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 p-1">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    {% endfor %}
+    <!-- Alert / Banner Invitations en attente (si présentes) -->
+    {% if invitations_en_attente %}
+        <div class="bg-gradient-to-r from-amber-500/10 via-amber-50 to-orange-50 border border-amber-200/90 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-start sm:items-center gap-3 min-w-0">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5 sm:mt-0">
+                        <i data-lucide="bell-ring" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h2 class="text-xs sm:text-base font-bold text-slate-900">
+                            {{ invitations_en_attente|length }} invitation(s) en attente de réponse
+                        </h2>
+                        <p class="text-xs text-slate-600">Rejoignez votre équipe pour commencer à collaborer.</p>
+                    </div>
                 </div>
-            {% endif %}
-        {% endwith %}
 
-        <!-- KPI Metrics Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-            <!-- Metric 1: Devoirs administrés -->
-            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Devoirs administrés</p>
-                        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ projets_administres|length }}</p>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/60">
-                        <i data-lucide="folder-git-2" class="w-6 h-6"></i>
-                    </div>
-                </div>
-                <div class="mt-3 flex items-center gap-1.5 text-xs text-indigo-600 font-semibold">
-                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-                    <span>Rôle Administrateur</span>
-                </div>
-            </div>
-
-            <!-- Metric 2: Devoirs rejoints -->
-            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Devoirs rejoints</p>
-                        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ participations_acceptees|length }}</p>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100/60">
-                        <i data-lucide="users" class="w-6 h-6"></i>
-                    </div>
-                </div>
-                <div class="mt-3 flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
-                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                    <span>Collaborations actives</span>
-                </div>
-            </div>
-
-            <!-- Metric 3: Invitations en attente -->
-            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Invitations en attente</p>
-                        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ invitations_en_attente|length }}</p>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100/60">
-                        <i data-lucide="inbox" class="w-6 h-6"></i>
-                    </div>
-                </div>
-                <div class="mt-3 flex items-center gap-1.5 text-xs {% if invitations_en_attente %}text-amber-600 font-bold{% else %}text-slate-400 font-medium{% endif %}">
-                    {% if invitations_en_attente %}
-                        <span class="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                        <span>Action requise</span>
-                    {% else %}
-                        <span>À jour</span>
-                    {% endif %}
-                </div>
+                <a href="{{ url_for('devoirs_partages') }}" 
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-amber-900 bg-amber-200/80 hover:bg-amber-300 border border-amber-300 transition shrink-0 w-full sm:w-auto text-center">
+                    <span>Répondre aux invitations</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
             </div>
         </div>
+    {% endif %}
 
-        <!-- Banner Invitations en Attente (Si présentes) -->
-        {% if invitations_en_attente %}
-            <div class="bg-gradient-to-r from-amber-500/10 via-amber-50 to-orange-50 border border-amber-200/90 rounded-3xl p-6 shadow-xs">
-                <div class="flex items-center gap-2 text-amber-800 font-bold mb-4">
-                    <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center">
-                        <i data-lucide="bell" class="w-4 h-4"></i>
-                    </div>
-                    <h2 class="text-base font-bold text-slate-900">
-                        Vous avez {{ invitations_en_attente|length }} invitation(s) en attente de réponse
-                    </h2>
+    <!-- 4 Key Navigation KPI Cards (Responsive Grid 1 / 2 / 4) -->
+    <div class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
+        
+        <!-- Card 1: Mes Devoirs Administrés -->
+        <a href="{{ url_for('mes_devoirs') }}" 
+           class="group bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-indigo-300 transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/60 group-hover:scale-105 transition-transform">
+                    <i data-lucide="layers" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
-
-                <div class="space-y-3">
-                    {% for invit in invitations_en_attente %}
-                        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-amber-200/60 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="text-base font-bold text-slate-900">{{ invit.projet.titre }}</h3>
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <i data-lucide="clock" class="w-3 h-3"></i>
-                                        En attente
-                                    </span>
-                                </div>
-                                <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                    <i data-lucide="user" class="w-3.5 h-3.5 text-slate-400"></i>
-                                    Créé par <strong class="text-slate-700 font-semibold">{{ invit.projet.admin.nom }}</strong> ({{ invit.projet.admin.email }})
-                                </p>
-                                {% if invit.projet.description %}
-                                    <p class="text-xs text-slate-600 mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                                        {{ invit.projet.description }}
-                                    </p>
-                                {% endif %}
-                            </div>
-
-                            <div class="flex items-center gap-2 shrink-0">
-                                <form action="{{ url_for('accepter_invitation', invit_id=invit.id) }}" method="POST">
-                                    <button type="submit" 
-                                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-all duration-200">
-                                        <i data-lucide="check" class="w-4 h-4"></i>
-                                        <span>Accepter</span>
-                                    </button>
-                                </form>
-                                <form action="{{ url_for('refuser_invitation', invit_id=invit.id) }}" method="POST">
-                                    <button type="submit" 
-                                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 transition-all duration-200">
-                                        <i data-lucide="x" class="w-4 h-4"></i>
-                                        <span>Décliner</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ projets_administres|length }}</span>
             </div>
-        {% endif %}
-
-        <!-- Formulaire de Création de Projet -->
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6 pb-6 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
-                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-900">Créer un nouveau devoir</h2>
-                        <p class="text-xs text-slate-500">Initiez un projet collaboratif et invitez vos camarades</p>
-                    </div>
-                </div>
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-100 self-start sm:self-auto">
-                    <i data-lucide="zap" class="w-3.5 h-3.5 text-violet-500"></i>
-                    <span>Notifications automatiques via API Posta</span>
-                </div>
+            <div class="mt-3 sm:mt-4">
+                <p class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Mes Devoirs</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Devoirs administrés</p>
             </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-indigo-600">
+                <span>Gérer mes devoirs</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </a>
 
-            <form action="{{ url_for('creer_projet') }}" method="POST" class="space-y-5">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                        Titre du devoir ou projet <span class="text-rose-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i data-lucide="file-text" class="w-4 h-4"></i>
-                        </div>
-                        <input type="text" name="titre" required 
-                               placeholder="Ex: Projet Web Développement Python / Flask"
-                               class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-400">
-                    </div>
+        <!-- Card 2: Devoirs Partagés -->
+        <a href="{{ url_for('devoirs_partages') }}" 
+           class="group bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-300 transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100/60 group-hover:scale-105 transition-transform">
+                    <i data-lucide="network" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ participations_acceptees|length }}</span>
+            </div>
+            <div class="mt-3 sm:mt-4">
+                <p class="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">Devoirs Partagés</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Projets où vous participez</p>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-emerald-600">
+                <span>Voir les devoirs</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </a>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                        Description &amp; Consignes
-                    </label>
-                    <textarea name="description" rows="3" 
-                              placeholder="Objectifs pédagogiques, rôles dans l'équipe, échéance..."
-                              class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-400"></textarea>
+        <!-- Card 3: Collaborateurs -->
+        <a href="{{ url_for('collaborateurs') }}" 
+           class="group bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-violet-300 transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center border border-violet-100/60 group-hover:scale-105 transition-transform">
+                    <i data-lucide="users" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ total_collaborateurs }}</span>
+            </div>
+            <div class="mt-3 sm:mt-4">
+                <p class="text-xs font-bold text-slate-900 group-hover:text-violet-600 transition-colors">Collaborateurs</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Camarades connectés</p>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-violet-600">
+                <span>Voir l'annuaire</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </a>
 
-                <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">
-                            Inviter des camarades par email
-                        </label>
-                        <span class="text-[11px] text-slate-400">Séparés par des virgules</span>
-                    </div>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i data-lucide="send" class="w-4 h-4"></i>
-                        </div>
-                        <input type="text" name="emails" 
-                               placeholder="camarade1@fac.univ.fr, camarade2@fac.univ.fr"
-                               class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-400">
-                    </div>
-                    <p class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
-                        <i data-lucide="mail-check" class="w-3.5 h-3.5 text-indigo-500"></i>
-                        Chaque camarade recevra instantanément un e-mail d'invitation avec un lien direct pour rejoindre votre équipe.
-                    </p>
+        <!-- Card 4: Créer un Devoir (Raccourci direct) -->
+        <a href="{{ url_for('creer_devoir') }}" 
+           class="group bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-amber-300 transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100/60 group-hover:scale-105 transition-transform">
+                    <i data-lucide="plus-circle" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
-
-                <div class="pt-2">
-                    <button type="submit" 
-                            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/20 transition-all duration-200">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                        <span>Créer le devoir &amp; envoyer les invitations</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Section: Mes Devoirs Administrés -->
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
-                        <i data-lucide="layers" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-900">Mes Devoirs (Administrateur)</h2>
-                        <p class="text-xs text-slate-500">Projets que vous avez créés et dont vous gérez l'équipe</p>
-                    </div>
-                </div>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700">
-                    {{ projets_administres|length }} projet(s)
+                <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+                    Nouveau
                 </span>
             </div>
+            <div class="mt-3 sm:mt-4">
+                <p class="text-xs font-bold text-slate-900 group-hover:text-amber-600 transition-colors">Créer un Devoir</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Nouveau projet d'équipe</p>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-amber-600">
+                <span>Lancer le formulaire</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </a>
 
-            {% if not projets_administres %}
-                <!-- Empty State -->
-                <div class="text-center py-12 px-4 rounded-2xl border-2 border-dashed border-slate-200">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                        <i data-lucide="folder-plus" class="w-6 h-6"></i>
+    </div>
+
+    <!-- Quick Overview Sections (Responsive Grid 1 / 2) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+
+        <!-- Colonne Gauche : Aperçu de mes devoirs récents -->
+        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-4 sm:p-7 shadow-xs flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-3.5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <i data-lucide="folder-git-2" class="w-4 h-4"></i>
+                        </div>
+                        <h2 class="text-xs sm:text-sm font-bold text-slate-900">Derniers devoirs créés</h2>
                     </div>
-                    <h3 class="text-sm font-bold text-slate-800">Aucun devoir créé pour le moment</h3>
-                    <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                        Utilisez le formulaire ci-dessus pour initialiser votre premier travail universitaire de groupe.
-                    </p>
+                    <a href="{{ url_for('mes_devoirs') }}" class="text-xs font-bold text-indigo-600 hover:underline">
+                        Tout voir
+                    </a>
                 </div>
-            {% else %}
-                <div class="space-y-4">
-                    {% for p in projets_administres %}
-                        <div class="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 hover:border-slate-300 transition-all">
-                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                                <div class="space-y-1">
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="text-base font-bold text-slate-900">{{ p.titre }}</h3>
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800">
-                                            <i data-lucide="crown" class="w-3 h-3 text-indigo-600"></i>
-                                            Admin
-                                        </span>
-                                    </div>
-                                    {% if p.description %}
-                                        <p class="text-xs text-slate-600 leading-relaxed pt-1">{{ p.description }}</p>
-                                    {% endif %}
-                                    <p class="text-[11px] text-slate-400 flex items-center gap-1.5 pt-1">
-                                        <i data-lucide="calendar" class="w-3 h-3"></i>
-                                        <span>Créé le {{ p.date_creation.strftime('%d/%m/%Y à %H:%M') }}</span>
+
+                {% if not projets_administres %}
+                    <div class="text-center py-8 text-slate-400">
+                        <i data-lucide="folder-plus" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                        <p class="text-xs">Vous n'avez pas encore créé de devoirs.</p>
+                    </div>
+                {% else %}
+                    <div class="space-y-2.5">
+                        {% for p in projets_administres[:3] %}
+                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition flex items-center justify-between gap-3">
+                                <div class="truncate min-w-0">
+                                    <h4 class="text-xs font-bold text-slate-900 truncate">{{ p.titre }}</h4>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">
+                                        {{ p.invitations|length }} collaborateur(s)
                                     </p>
                                 </div>
-
-                                <div class="shrink-0">
-                                    <form action="{{ url_for('supprimer_projet', projet_id=p.id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer définitivement ce projet ?');">
-                                        <button type="submit" 
-                                                class="inline-flex items-center gap-1 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50/60 hover:bg-rose-100 px-3 py-1.5 rounded-xl border border-rose-200/60 transition">
-                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                            <span>Supprimer</span>
-                                        </button>
-                                    </form>
-                                </div>
+                                <span class="text-[10px] text-slate-400 shrink-0">
+                                    {{ p.date_creation.strftime('%d/%m/%Y') }}
+                                </span>
                             </div>
-
-                            <!-- Membres et invitations associées -->
-                            <div class="mt-4 pt-4 border-t border-slate-200/70">
-                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2.5 flex items-center gap-1.5">
-                                    <i data-lucide="users" class="w-3.5 h-3.5"></i>
-                                    <span>Membres de l'équipe ({{ p.invitations|length }})</span>
-                                </p>
-
-                                {% if not p.invitations %}
-                                    <p class="text-xs text-slate-400 italic">Aucun collaborateur n'a été invité sur ce devoir.</p>
-                                {% else %}
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-                                        {% for invit in p.invitations %}
-                                            <div class="bg-white p-2.5 rounded-xl border border-slate-200 flex items-center justify-between gap-2 shadow-2xs">
-                                                <div class="truncate">
-                                                    <p class="text-xs font-bold text-slate-800 truncate">{{ invit.user.nom }}</p>
-                                                    <p class="text-[11px] text-slate-400 truncate">{{ invit.user.email }}</p>
-                                                </div>
-                                                <div class="shrink-0">
-                                                    {% if invit.statut == 'accepte' %}
-                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                                            <i data-lucide="check-circle-2" class="w-3 h-3"></i>
-                                                            Actif
-                                                        </span>
-                                                    {% elif invit.statut == 'refuse' %}
-                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                                                            <i data-lucide="x-circle" class="w-3 h-3"></i>
-                                                            Refusé
-                                                        </span>
-                                                    {% else %}
-                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                                            <i data-lucide="clock-3" class="w-3 h-3"></i>
-                                                            En attente
-                                                        </span>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- Section: Devoirs Partagés Rejoints -->
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-                        <i data-lucide="network" class="w-5 h-5"></i>
+                        {% endfor %}
                     </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-900">Devoirs Partagés Avec Moi</h2>
-                        <p class="text-xs text-slate-500">Devoirs où vous collaborez en tant que membre</p>
-                    </div>
-                </div>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
-                    {{ participations_acceptees|length }} projet(s)
-                </span>
+                {% endif %}
             </div>
 
-            {% if not participations_acceptees %}
-                <!-- Empty State -->
-                <div class="text-center py-12 px-4 rounded-2xl border-2 border-dashed border-slate-200">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                        <i data-lucide="users" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-slate-800">Aucun devoir partagé pour l'instant</h3>
-                    <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                        Lorsque des camarades vous inviteront à collaborer, leurs devoirs apparaîtront ici dès acceptation.
-                    </p>
-                </div>
-            {% else %}
-                <div class="space-y-4">
-                    {% for invit in participations_acceptees %}
-                        <div class="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 hover:border-slate-300 transition-all">
-                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="text-base font-bold text-slate-900">{{ invit.projet.titre }}</h3>
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800">
-                                            <i data-lucide="user-check" class="w-3 h-3 text-emerald-600"></i>
-                                            Membre actif
-                                        </span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                        <i data-lucide="shield" class="w-3.5 h-3.5 text-indigo-500"></i>
-                                        Administrateur : <strong class="text-slate-700 font-semibold">{{ invit.projet.admin.nom }}</strong> ({{ invit.projet.admin.email }})
-                                    </p>
-                                    {% if invit.projet.description %}
-                                        <p class="text-xs text-slate-600 leading-relaxed mt-2.5 bg-white p-3 rounded-xl border border-slate-200/60">
-                                            {{ invit.projet.description }}
-                                        </p>
-                                    {% endif %}
-                                </div>
-                            </div>
+            <div class="pt-3.5 mt-3.5 border-t border-slate-100 text-center">
+                <a href="{{ url_for('creer_devoir') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>Ajouter un autre devoir</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Colonne Droite : Aperçu des devoirs partagés avec moi -->
+        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-4 sm:p-7 shadow-xs flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-3.5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <i data-lucide="network" class="w-4 h-4"></i>
                         </div>
-                    {% endfor %}
+                        <h2 class="text-xs sm:text-sm font-bold text-slate-900">Devoirs partagés récents</h2>
+                    </div>
+                    <a href="{{ url_for('devoirs_partages') }}" class="text-xs font-bold text-emerald-600 hover:underline">
+                        Tout voir
+                    </a>
                 </div>
-            {% endif %}
+
+                {% if not participations_acceptees %}
+                    <div class="text-center py-8 text-slate-400">
+                        <i data-lucide="users" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                        <p class="text-xs">Aucun devoir partagé pour le moment.</p>
+                    </div>
+                {% else %}
+                    <div class="space-y-2.5">
+                        {% for invit in participations_acceptees[:3] %}
+                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition flex items-center justify-between gap-3">
+                                <div class="truncate min-w-0">
+                                    <h4 class="text-xs font-bold text-slate-900 truncate">{{ invit.projet.titre }}</h4>
+                                    <p class="text-[11px] text-slate-400 mt-0.5 truncate">
+                                        Par {{ invit.projet.admin.nom }}
+                                    </p>
+                                </div>
+                                <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
+                                    Membre
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="pt-3.5 mt-3.5 border-t border-slate-100 text-center">
+                <a href="{{ url_for('devoirs_partages') }}" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 inline-flex items-center gap-1">
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    <span>Accéder aux devoirs partagés</span>
+                </a>
+            </div>
         </div>
 
-    </main>
+    </div>
 
-    <!-- Footer Minimaliste -->
-    <footer class="bg-white border-t border-slate-200/80 py-6 text-center text-xs text-slate-400 mt-auto">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>Todo Fac &bull; Université 2026 &bull; Système Collaboratif</p>
-            <p class="flex items-center gap-1 text-slate-500">
-                <i data-lucide="zap" class="w-3.5 h-3.5 text-violet-500"></i>
-                Propulsé avec l'API Posta
-            </p>
-        </div>
-    </footer>
-
-    <!-- Initialize Lucide Icons -->
-    <script>
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+</div>
+{% endblock %}

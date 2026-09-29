@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-slate-50/60">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}Todo Fac{% endblock %} &bull; Plateforme Collaborative</title>
+    <!-- Google Font: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    screens: {
+                        'xs': '420px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Empêcher tout débordement horizontal intempestif sur mobile */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        /* Style subtil de défilement */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased text-slate-800 bg-slate-50/50 selection:bg-indigo-500 selection:text-white pb-20 lg:pb-0">
+
+    <!-- Top Navigation Header (Desktop & Tablet) -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
+        <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
+            <div class="h-16 flex items-center justify-between gap-2 sm:gap-4">
+                
+                <!-- Brand & Logo -->
+                <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+                    <a href="{{ url_for('index') }}" class="flex items-center gap-2.5 sm:gap-3 group">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
+                            <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+                        </div>
+                        <div class="flex items-center gap-1.5 sm:gap-2">
+                            <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Todo<span class="text-indigo-600">Fac</span></span>
+                            <span class="hidden xs:inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-100">
+                                Campus
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation Links (Large Screens) -->
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="{{ url_for('index') }}" 
+                       class="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 {% if request.endpoint == 'index' %}bg-indigo-50 text-indigo-700 border border-indigo-100/80 shadow-2xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-100/80{% endif %}">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4 {% if request.endpoint == 'index' %}text-indigo-600{% else %}text-slate-400{% endif %}"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+
+                    <a href="{{ url_for('creer_devoir') }}" 
+                       class="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 {% if request.endpoint == 'creer_devoir' %}bg-indigo-50 text-indigo-700 border border-indigo-100/80 shadow-2xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-100/80{% endif %}">
+                        <i data-lucide="plus-circle" class="w-4 h-4 {% if request.endpoint == 'creer_devoir' %}text-indigo-600{% else %}text-slate-400{% endif %}"></i>
+                        <span>Créer un devoir</span>
+                    </a>
+
+                    <a href="{{ url_for('mes_devoirs') }}" 
+                       class="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 {% if request.endpoint == 'mes_devoirs' %}bg-indigo-50 text-indigo-700 border border-indigo-100/80 shadow-2xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-100/80{% endif %}">
+                        <i data-lucide="layers" class="w-4 h-4 {% if request.endpoint == 'mes_devoirs' %}text-indigo-600{% else %}text-slate-400{% endif %}"></i>
+                        <span>Mes devoirs</span>
+                    </a>
+
+                    <a href="{{ url_for('devoirs_partages') }}" 
+                       class="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 {% if request.endpoint == 'devoirs_partages' %}bg-indigo-50 text-indigo-700 border border-indigo-100/80 shadow-2xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-100/80{% endif %}">
+                        <i data-lucide="network" class="w-4 h-4 {% if request.endpoint == 'devoirs_partages' %}text-indigo-600{% else %}text-slate-400{% endif %}"></i>
+                        <span>Devoirs partagés</span>
+                        {% if pending_invitations_count and pending_invitations_count > 0 %}
+                            <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-extrabold bg-amber-500 text-white rounded-full animate-pulse">
+                                {{ pending_invitations_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <a href="{{ url_for('collaborateurs') }}" 
+                       class="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 {% if request.endpoint == 'collaborateurs' %}bg-indigo-50 text-indigo-700 border border-indigo-100/80 shadow-2xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-100/80{% endif %}">
+                        <i data-lucide="users" class="w-4 h-4 {% if request.endpoint == 'collaborateurs' %}text-indigo-600{% else %}text-slate-400{% endif %}"></i>
+                        <span>Collaborateurs</span>
+                    </a>
+                </nav>
+
+                <!-- User Section & Actions -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="flex items-center gap-2 sm:gap-2.5 pl-2 sm:pl-3 sm:border-l sm:border-slate-200">
+                        <div class="relative shrink-0">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs">
+                                {{ current_user.nom[0]|upper }}
+                            </div>
+                            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                        </div>
+                        <div class="hidden sm:block text-left min-w-0 max-w-[130px] md:max-w-[170px]">
+                            <p class="text-xs font-bold text-slate-900 leading-tight truncate">{{ current_user.nom }}</p>
+                            <p class="text-[11px] text-slate-500 leading-tight truncate" title="{{ current_user.email }}">{{ current_user.email }}</p>
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('logout') }}" 
+                       title="Se déconnecter"
+                       class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 hover:border-rose-200 transition-all shadow-2xs shrink-0">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        <span class="hidden md:inline">Déconnexion</span>
+                    </a>
+
+                    <!-- Mobile Menu Hamburger Button (Pour Drawer complet) -->
+                    <button id="mobile-menu-btn" 
+                            class="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 focus:outline-none"
+                            aria-label="Menu principal">
+                        <i data-lucide="menu" id="menu-icon-bars" class="w-5 h-5"></i>
+                        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 hidden"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Drawer (Top Dropdown) -->
+            <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-100 py-3 space-y-1">
+                <!-- User card in mobile drawer -->
+                <div class="sm:hidden p-3 mb-2 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                        {{ current_user.nom[0]|upper }}
+                    </div>
+                    <div class="min-w-0 flex-grow">
+                        <p class="text-xs font-bold text-slate-900 truncate">{{ current_user.nom }}</p>
+                        <p class="text-[11px] text-slate-500 truncate">{{ current_user.email }}</p>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('index') }}" 
+                   class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold {% if request.endpoint == 'index' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        Tableau de bord
+                    </span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
+                </a>
+
+                <a href="{{ url_for('creer_devoir') }}" 
+                   class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold {% if request.endpoint == 'creer_devoir' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        Créer un devoir
+                    </span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
+                </a>
+
+                <a href="{{ url_for('mes_devoirs') }}" 
+                   class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold {% if request.endpoint == 'mes_devoirs' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="layers" class="w-4 h-4"></i>
+                        Mes devoirs
+                    </span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
+                </a>
+
+                <a href="{{ url_for('devoirs_partages') }}" 
+                   class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold {% if request.endpoint == 'devoirs_partages' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="network" class="w-4 h-4"></i>
+                        Devoirs partagés
+                    </span>
+                    {% if pending_invitations_count and pending_invitations_count > 0 %}
+                        <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-extrabold bg-amber-500 text-white rounded-full">
+                            {{ pending_invitations_count }} en attente
+                        </span>
+                    {% else %}
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('collaborateurs') }}" 
+                   class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold {% if request.endpoint == 'collaborateurs' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                    <span class="flex items-center gap-2.5">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        Collaborateurs
+                    </span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-40"></i>
+                </a>
+
+                <div class="pt-2 border-t border-slate-100">
+                    <a href="{{ url_for('logout') }}" 
+                       class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Se déconnecter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area (padding responsive pour tous les appareils) -->
+    <main class="flex-grow max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 w-full space-y-5 sm:space-y-6">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="space-y-2.5">
+                    {% for category, message in messages %}
+                        <div class="flex items-start sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl border text-xs sm:text-sm font-medium shadow-xs transition-all duration-200
+                            {% if category == 'success' %}bg-emerald-50/90 border-emerald-200 text-emerald-800
+                            {% elif category == 'error' %}bg-rose-50/90 border-rose-200 text-rose-800
+                            {% elif category == 'warning' %}bg-amber-50/90 border-amber-200 text-amber-800
+                            {% else %}bg-indigo-50/90 border-indigo-200 text-indigo-800{% endif %}">
+                            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                                <i data-lucide="{% if category == 'success' %}check-circle-2{% elif category == 'error' %}alert-circle{% elif category == 'warning' %}alert-triangle{% else %}info{% endif %}" class="w-4 h-4 sm:w-5 sm:h-5 shrink-0"></i>
+                                <span class="break-words">{{ message }}</span>
+                            </div>
+                            <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100/50 shrink-0 ml-2">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+    <!-- Mobile Bottom Navigation Bar (Ultra Ergonomique pour Smartphones & Tablettes) -->
+    <nav class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 px-2 py-1.5 flex justify-around items-center lg:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        
+        <!-- Tab 1: Accueil -->
+        <a href="{{ url_for('index') }}" 
+           class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition min-w-[56px] {% if request.endpoint == 'index' %}text-indigo-600 font-bold{% else %}text-slate-400 hover:text-slate-700{% endif %}">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 {% if request.endpoint == 'index' %}stroke-[2.5]{% endif %}"></i>
+            <span class="text-[10px] mt-0.5 leading-none">Accueil</span>
+        </a>
+
+        <!-- Tab 2: Mes Devoirs -->
+        <a href="{{ url_for('mes_devoirs') }}" 
+           class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition min-w-[56px] {% if request.endpoint == 'mes_devoirs' %}text-indigo-600 font-bold{% else %}text-slate-400 hover:text-slate-700{% endif %}">
+            <i data-lucide="layers" class="w-5 h-5 {% if request.endpoint == 'mes_devoirs' %}stroke-[2.5]{% endif %}"></i>
+            <span class="text-[10px] mt-0.5 leading-none">Devoirs</span>
+        </a>
+
+        <!-- Tab 3: Créer (Bouton central surélevé) -->
+        <a href="{{ url_for('creer_devoir') }}" 
+           class="flex flex-col items-center justify-center -mt-4 transition group" title="Créer un devoir">
+            <div class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-600/30 group-active:scale-95 transition-transform">
+                <i data-lucide="plus" class="w-6 h-6 stroke-[2.5]"></i>
+            </div>
+            <span class="text-[10px] mt-1 font-bold text-slate-700 leading-none">Créer</span>
+        </a>
+
+        <!-- Tab 4: Devoirs Partagés -->
+        <a href="{{ url_for('devoirs_partages') }}" 
+           class="relative flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition min-w-[56px] {% if request.endpoint == 'devoirs_partages' %}text-indigo-600 font-bold{% else %}text-slate-400 hover:text-slate-700{% endif %}">
+            <div class="relative">
+                <i data-lucide="network" class="w-5 h-5 {% if request.endpoint == 'devoirs_partages' %}stroke-[2.5]{% endif %}"></i>
+                {% if pending_invitations_count and pending_invitations_count > 0 %}
+                    <span class="absolute -top-1 -right-1.5 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-white animate-pulse"></span>
+                {% endif %}
+            </div>
+            <span class="text-[10px] mt-0.5 leading-none">Partagés</span>
+        </a>
+
+        <!-- Tab 5: Collaborateurs -->
+        <a href="{{ url_for('collaborateurs') }}" 
+           class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition min-w-[56px] {% if request.endpoint == 'collaborateurs' %}text-indigo-600 font-bold{% else %}text-slate-400 hover:text-slate-700{% endif %}">
+            <i data-lucide="users" class="w-5 h-5 {% if request.endpoint == 'collaborateurs' %}stroke-[2.5]{% endif %}"></i>
+            <span class="text-[10px] mt-0.5 leading-none">Équipe</span>
+        </a>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200/80 py-6 text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div class="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                <span class="font-extrabold text-slate-800">TodoFac</span>
+                <span>&bull;</span>
+                <span>Système Collaboratif &copy; 2026</span>
+            </div>
+            <div class="flex items-center justify-center sm:justify-end gap-3 text-slate-400 text-[11px]">
+                <span class="flex items-center gap-1.5 text-slate-600 font-medium">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-violet-500"></i>
+                    Posta API
+                </span>
+                <span>&bull;</span>
+                <span>Optimisé multi-écrans &amp; mobile</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialiser Lucide icons
+        lucide.createIcons();
+
+        // Menu Mobile (Drawer en haut)
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconBars = document.getElementById('menu-icon-bars');
+        const iconClose = document.getElementById('menu-icon-close');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+                iconBars.classList.toggle('hidden');
+                iconClose.classList.toggle('hidden');
+            });
+
+            // Fermer si clic en dehors
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    iconBars.classList.remove('hidden');
+                    iconClose.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
