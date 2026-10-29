@@ -1,0 +1,26 @@
+# Environnement et secrets
+.env
+.env.local
+
+# Python / Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environnements virtuels
+venv/
+.venv/
+ENV/
+env/
+
+# Base de données locale / Instance Flask
+instance/
+*.db
+*.sqlite3
+
+# IDE / Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo

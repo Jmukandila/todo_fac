@@ -104,6 +104,34 @@
                         </div>
                     </div>
 
+                    <!-- Barre de progression et accès à l'espace de tâches -->
+                    <div class="mt-4 p-3.5 sm:p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div class="space-y-1.5 flex-grow min-w-0">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-slate-800 flex items-center gap-1.5">
+                                    <i data-lucide="trending-up" class="w-3.5 h-3.5 text-indigo-600"></i>
+                                    Progression des tâches
+                                </span>
+                                <span class="font-extrabold text-indigo-600">{{ p.pourcentage_progression }}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden flex">
+                                {% if p.total_taches > 0 %}
+                                    <div class="bg-emerald-500 h-full" style="width: {{ (p.taches_terminees / p.total_taches * 100)|round }}%"></div>
+                                    <div class="bg-amber-400 h-full" style="width: {{ (p.taches_en_cours / p.total_taches * 100)|round }}%"></div>
+                                {% endif %}
+                            </div>
+                            <p class="text-[11px] text-slate-500">
+                                {{ p.taches_terminees }}/{{ p.total_taches }} tâche(s) terminée(s) &bull; {{ p.taches_en_cours }} en cours
+                            </p>
+                        </div>
+
+                        <a href="{{ url_for('detail_projet', projet_id=p.id) }}" 
+                           class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition active:scale-95 shrink-0 text-center">
+                            <i data-lucide="layout-kanban" class="w-4 h-4"></i>
+                            <span>Espace de travail &amp; tâches</span>
+                        </a>
+                    </div>
+
                     <!-- Collaborateurs du devoir -->
                     <div class="mt-4 sm:mt-5 space-y-3 sm:space-y-4">
                         <div class="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2">
