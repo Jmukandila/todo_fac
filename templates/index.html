@@ -174,17 +174,21 @@
                 {% else %}
                     <div class="space-y-2.5">
                         {% for p in projets_administres[:3] %}
-                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition flex items-center justify-between gap-3">
+                            <a href="{{ url_for('detail_projet', projet_id=p.id) }}" 
+                               class="group p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70 hover:bg-indigo-50/60 hover:border-indigo-200 transition flex items-center justify-between gap-3">
                                 <div class="truncate min-w-0">
-                                    <h4 class="text-xs font-bold text-slate-900 truncate">{{ p.titre }}</h4>
+                                    <h4 class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition truncate">{{ p.titre }}</h4>
                                     <p class="text-[11px] text-slate-400 mt-0.5">
-                                        {{ p.invitations|length }} collaborateur(s)
+                                        {{ p.invitations|length }} collaborateur(s) &bull; {{ p.taches|length }} tâche(s)
                                     </p>
                                 </div>
-                                <span class="text-[10px] text-slate-400 shrink-0">
-                                    {{ p.date_creation.strftime('%d/%m/%Y') }}
-                                </span>
-                            </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <span class="text-[10px] font-bold text-indigo-700 bg-white px-2 py-0.5 rounded-md border border-indigo-100">
+                                        {{ p.pourcentage_progression }}%
+                                    </span>
+                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition"></i>
+                                </div>
+                            </a>
                         {% endfor %}
                     </div>
                 {% endif %}
@@ -221,17 +225,21 @@
                 {% else %}
                     <div class="space-y-2.5">
                         {% for invit in participations_acceptees[:3] %}
-                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition flex items-center justify-between gap-3">
+                            <a href="{{ url_for('detail_projet', projet_id=invit.projet.id) }}" 
+                               class="group p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70 hover:bg-emerald-50/60 hover:border-emerald-200 transition flex items-center justify-between gap-3">
                                 <div class="truncate min-w-0">
-                                    <h4 class="text-xs font-bold text-slate-900 truncate">{{ invit.projet.titre }}</h4>
+                                    <h4 class="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition truncate">{{ invit.projet.titre }}</h4>
                                     <p class="text-[11px] text-slate-400 mt-0.5 truncate">
-                                        Par {{ invit.projet.admin.nom }}
+                                        Par {{ invit.projet.admin.nom }} &bull; {{ invit.projet.pourcentage_progression }}% fait
                                     </p>
                                 </div>
-                                <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
-                                    Membre
-                                </span>
-                            </div>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-full border border-emerald-200">
+                                        Tâches
+                                    </span>
+                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition"></i>
+                                </div>
+                            </a>
                         {% endfor %}
                     </div>
                 {% endif %}

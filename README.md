@@ -1,8 +1,8 @@
-# 🎓 Todo Fac - Gestionnaire Collaboratif de Devoirs
+#  Todo Fac - Gestionnaire Collaboratif de Devoirs
 
 Application web collaborative en Python Flask permettant aux étudiants de créer des devoirs de groupe, d'inviter leurs camarades par email (via l'API Posta) et de suivre l'avancement des équipes.
 
-## 🛠️ Stack Technique
+## Stack Technique
 
 - **Backend** : Python 3, Flask, Flask-SQLAlchemy (base SQLite)
 - **Authentification & Sécurité** : Flask-Login, hachage de mot de passe avec Werkzeug (`generate_password_hash` / `check_password_hash`)
@@ -11,7 +11,7 @@ Application web collaborative en Python Flask permettant aux étudiants de crée
 
 ---
 
-## 📂 Structure du Projet
+##  Structure du Projet
 
 ```text
 todo_fac/
@@ -35,7 +35,7 @@ todo_fac/
 
 ---
 
-## 🚀 Lancement de l'Application
+##  Lancement de l'Application
 
 1. **Activer l'environnement virtuel :**
    ```bash
@@ -43,11 +43,17 @@ todo_fac/
    ```
 
 2. **(Optionnel) Configurer les variables d'environnement Posta :**
+   Créer un fichier `.env` à la racine (ou copier `.env.example`) :
    ```bash
-   export POSTA_API_KEY="votre_cle_api_posta"
-   export POSTA_API_URL="https://api.posta.tech/v1/send" # ou l'URL de votre instance
+   cp .env.example .env
    ```
-   *Note : En l'absence de clé API, le service fonctionne en mode simulation (logs console).*
+   Renseigner votre clé et l'URL Posta :
+   ```env
+   POSTA_API_KEY="psk_votre_cle_api"
+   POSTA_API_URL="https://api.goposta.dev/api/v1/emails/send" # ou l'URL de votre instance Posta
+   POSTA_FROM_EMAIL=""
+   ```
+   *Note : En l'absence de clé API, le service fonctionne automatiquement en mode simulation (logs console).*
 
 3. **Lancer le serveur de développement :**
    ```bash
@@ -57,7 +63,7 @@ todo_fac/
 
 ---
 
-## ✨ Pages et Fonctionnalités
+##  Pages et Fonctionnalités
 
 1. **Tableau de Bord Général (`/`)** :
    - Vue d'ensemble avec métriques clés (Devoirs administrés, Devoirs partagés, Collaborateurs, Invitations).

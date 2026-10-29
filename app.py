@@ -1,6 +1,9 @@
 import os
 from datetime import datetime, timezone
+from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for, abort
+
+load_dotenv()
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import (
     LoginManager,
@@ -364,12 +367,14 @@ def creer_devoir():
                     db.session.add(invit)
                     invitations_envoyees += 1
 
-                    send_invitation_email(
+                    email_ok = send_invitation_email(
                         destinataire_email=user_cible.email,
                         projet_titre=nouveau_projet.titre,
                         admin_nom=current_user.nom,
                         invite_url=url_for("devoirs_partages", _external=True),
                     )
+                    if email_ok:
+                        invitations_envoyees += 1
 
             db.session.commit()
 
@@ -618,9 +623,9 @@ def changer_statut_tache(tache_id):
         tache.statut = nouveau_statut
         db.session.commit()
         labels = {
-            "a_faire": "À faire 📋",
-            "en_cours": "En cours ⏳",
-            "termine": "Terminé ✅",
+            "a_faire": "À faire ",
+            "en_cours": "En cours ",
+            "termine": "Terminé ",
         }
         flash(f"Statut de '{tache.titre}' mis à jour : {labels.get(nouveau_statut)}", "info")
 
@@ -706,13 +711,16 @@ def inviter_collaborateur(projet_id):
         invit = Invitation(projet_id=projet.id, user_id=user_cible.id, statut="en_attente")
         db.session.add(invit)
         db.session.commit()
-        send_invitation_email(
+        email_ok = send_invitation_email(
             destinataire_email=user_cible.email,
             projet_titre=projet.titre,
             admin_nom=current_user.nom,
             invite_url=url_for("devoirs_partages", _external=True),
         )
-        flash(f"Invitation transmise avec succès à {user_cible.email} !", "success")
+        if email_ok:
+            flash(f"Invitation transmise avec succès à {user_cible.email} !", "success")
+        else:
+            flash(f"Invitation créée, mais l'envoi de l'e-mail à {user_cible.email} a échoué (vérifiez vos quotas ou la configuration Posta).", "warning")
 
     return redirect(request.referrer or url_for("mes_devoirs"))
 
@@ -736,13 +744,16 @@ def relancer_invitation(invit_id):
     if invit.projet.admin_id != current_user.id:
         abort(403)
 
-    send_invitation_email(
+    email_ok = send_invitation_email(
         destinataire_email=invit.user.email,
         projet_titre=invit.projet.titre,
         admin_nom=current_user.nom,
         invite_url=url_for("devoirs_partages", _external=True),
     )
-    flash(f"L'invitation pour {invit.user.email} a été relancée par e-mail.", "success")
+    if email_ok:
+        flash(f"L'invitation pour {invit.user.email} a été relancée par e-mail.", "success")
+    else:
+        flash(f"Échec de l'envoi de l'e-mail de relance à {invit.user.email} (vérifiez vos quotas ou la configuration Posta).", "error")
     return redirect(request.referrer or url_for("mes_devoirs"))
 
 
